@@ -1,12 +1,29 @@
 package ar.edu.unju.escmi.entities;
 
-public class Cliente {
+import javax.annotation.processing.Generated;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Clientes")
+public class Cliente {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+
+	@Column(length = 15)
 	private String nombre;
+	@Column(length = 20)
 	private String apellido;
+	@Column(length = 25)
 	private String domicilio;
+	@Column(unique = true, length = 8)
 	private int dni;
+	@Column(name = "cli_estado")
 	private boolean estado;
 
 	// Constructor sin parámetros
