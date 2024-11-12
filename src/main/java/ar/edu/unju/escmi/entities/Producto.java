@@ -1,10 +1,23 @@
 package ar.edu.unju.escmi.entities;
 
-public class Producto {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Productos")
+public class Producto {
+	@Id
+	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private long id;
+	@Column(nullable = false)
 	private String descripcion;
+	@Column(name = "PU")
 	private double precioUnitario;
+	@Column(nullable = false)
 	private boolean estado;
 	
 	public Producto() {
