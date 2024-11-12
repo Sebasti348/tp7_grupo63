@@ -1,13 +1,23 @@
 package ar.edu.unju.escmi.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name =  "Detalle_Factura")
 public class DetalleFactura {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
+	@Column(nullable = false)
 	private Producto producto;
-
+	@Column(nullable = false)
 	private int cantidad ;
-
+	@Column(nullable = false)
 	private double subtotal;
 	
 	private Factura factura;
