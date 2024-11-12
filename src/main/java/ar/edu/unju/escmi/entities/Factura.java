@@ -2,14 +2,30 @@ package ar.edu.unju.escmi.entities;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Facturas")
 public class Factura {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	@Column(nullable = false)
 	private LocalDate fecha;
+	@Column(name = "domicilio_cliente", nullable = false)
 	private String domicilio;
+	@Column(nullable = false)
 	private double total;
+	@Column(nullable = false)
 	private boolean estado;
-	private Cliente cliente; 
+	@Column(nullable = false) 
+	private Cliente cliente;
 	
 
 	public Factura() {
