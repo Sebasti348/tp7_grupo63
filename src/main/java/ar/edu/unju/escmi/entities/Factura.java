@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -15,7 +17,7 @@ public class Factura {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	@Column(nullable = false)
 	private LocalDate fecha;
 	@Column(name = "domicilio_cliente", nullable = false)
@@ -24,8 +26,11 @@ public class Factura {
 	private double total;
 	@Column(nullable = false)
 	private boolean estado;
-	@Column(nullable = false) 
+
+	@OneToOne
+	@JoinColumn(name = "cliente")
 	private Cliente cliente;
+
 	
 
 	public Factura() {
