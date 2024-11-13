@@ -5,21 +5,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name =  "Detalle_Factura")
+@Table(name = "DetalleFactura")
 public class DetalleFactura {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Column(nullable = false)
+
+	@ManyToOne
+	@JoinColumn(name = "producto_id")
 	private Producto producto;
+
 	@Column(nullable = false)
-	private int cantidad ;
+	private int cantidad;
 	@Column(nullable = false)
 	private double subtotal;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "factura_id")
 	private Factura factura;
 	
 	public DetalleFactura() {
