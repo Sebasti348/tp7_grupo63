@@ -33,12 +33,20 @@ public class Factura {
 	@OneToOne
 	@JoinColumn(name = "cliente")
 	private Cliente cliente;
-
-	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetalleFactura> detalleFacturas;
 	
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleFactura> detalleFacturas;	
+
 	public Factura() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public List<DetalleFactura> getDetalleFacturas() {
+		return detalleFacturas;
+	}
+
+	public void setDetalleFacturas(List<DetalleFactura> detalleFacturas) {
+		this.detalleFacturas = detalleFacturas;
 	}
 
 	public Factura(LocalDate fecha, Cliente cliente, String domicilio, double total, boolean estado) {
@@ -95,13 +103,15 @@ public class Factura {
 	}
 
 	public void setEstado(boolean estado) {
-		this.estado = true;
+		this.estado = estado;
 	}
 
 	@Override
 	public String toString() {
-		return "Factura [id=" + id + ", fecha=" + fecha + ", cliente=" + cliente + ", domicilio=" + domicilio
-				+ ", total=" + total + ", estado=" + estado + "]";
+		return "Factura [id=" + id + ", fecha=" + fecha + ", domicilio=" + domicilio + ", total=" + total + ", estado="
+				+ estado + ", cliente=" + cliente + ", detalleFacturas=" + detalleFacturas + "]";
 	}
+
+
 
 }

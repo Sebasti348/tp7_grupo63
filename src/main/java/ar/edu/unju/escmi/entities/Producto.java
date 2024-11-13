@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "Productos")
 public class Producto {
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@Column(nullable = false)
 	private String descripcion;
@@ -19,11 +19,11 @@ public class Producto {
 	private double precioUnitario;
 	@Column(nullable = false)
 	private boolean estado;
-	
+
 	public Producto() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Producto(String descripcion, double precioUnitario, boolean estado) {
 		super();
 		this.descripcion = descripcion;
@@ -68,5 +68,5 @@ public class Producto {
 		return "Producto [id=" + id + ", descripcion=" + descripcion + ", precioUnitario=" + precioUnitario
 				+ ", estado=" + estado + "]";
 	}
-	
+
 }

@@ -1,6 +1,5 @@
 package ar.edu.unju.escmi.entities;
 
-import javax.annotation.processing.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ public class Cliente {
 	private String apellido;
 	@Column(length = 25)
 	private String domicilio;
-	@Column(unique = true, length = 8)
+	@Column(unique = true)
 	private int dni;
 	@Column(name = "cli_estado")
 	private boolean estado;

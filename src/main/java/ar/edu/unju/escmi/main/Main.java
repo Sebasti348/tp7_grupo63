@@ -1,6 +1,7 @@
 package ar.edu.unju.escmi.main;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -133,54 +134,13 @@ public class Main {
 	private static void realizarVenta() {
 		long iid_cli = 0;
 		while (true) {
-			System.out.print("Ingrese DNI del cliente: ");
+			System.out.print("Ingrese ID del cliente: ");
 			try {
 				iid_cli = scanner.nextLong();
 				scanner.nextLine();
 				break;
 			} catch (InputMismatchException e) {
-				System.out.println("Error: Debe ingresar un número entero para el DNI del cliente.");
-				scanner.nextLine();
-			}
-		}
-
-		long idProd = 0;
-		while (true) {
-			System.out.print("Ingrese ID del producto: ");
-			try {
-				idProd = scanner.nextLong();
-				scanner.nextLine();
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Error: Debe ingresar un número válido para el ID del producto.");
-				scanner.nextLine();
-			}
-		}
-
-		int cantidad = 0;
-		while (true) {
-			System.out.print("Ingrese la cantidad de productos a comprar: ");
-			try {
-				cantidad = scanner.nextInt();
-				scanner.nextLine();
-				if (cantidad > 0)
-					break;
-				System.out.println("Error: La cantidad debe ser mayor que cero.");
-			} catch (InputMismatchException e) {
-				System.out.println("Error: Debe ingresar un número entero válido para la cantidad.");
-				scanner.nextLine();
-			}
-		}
-
-		long numeroFactura = 0;
-		while (true) {
-			System.out.print("Ingrese el número de factura: ");
-			try {
-				numeroFactura = scanner.nextLong();
-				scanner.nextLine();
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Error: Debe ingresar un número entero válido para el número de factura.");
+				System.out.println("Error: Debe ingresar un número entero para el ID del cliente.");
 				scanner.nextLine();
 			}
 		}
@@ -192,14 +152,70 @@ public class Main {
 			return;
 		}
 
-		Producto producto = productoDao.obtenerProductoPorId(idProd);
-		if (producto == null || !producto.isEstado()) {
-			System.out.println("Error: El producto con ID proporcionado no existe o está inactivo.");
-			return;
-		}
+		boolean agregarMasProductos = true;
+		List<DetalleFactura> detalles = new ArrayList<>();
+		while (agregarMasProductos) {
+			Long idProd;
+			while (true) {
+				System.out.print("Ingrese ID del producto: ");
+				try {
+					idProd = scanner.nextLong();
+					scanner.nextLine();
+					break;
+				} catch (InputMismatchException e) {
+					System.out.println("Error: Debe ingresar un número válido para el ID del producto.");
+					scanner.nextLine();
+				}
+			}
 
-		detalleFactura.guardarDetalle(new DetalleFactura(producto, cantidad, cantidad * producto.getPrecioUnitario()));
-		facturaDao.guardarFactura(new Factura(LocalDate.now(), cliente, cliente.getDomicilio(), numeroFactura, true));
+			int cantidad = 0;
+			while (true) {
+				System.out.print("Ingrese la cantidad de productos a comprar: ");
+				try {
+					cantidad = scanner.nextInt();
+					scanner.nextLine();
+					if (cantidad > 0)
+						break;
+					System.out.println("Error: La cantidad debe ser mayor que cero.");
+				} catch (InputMismatchException e) {
+					System.out.println("Error: Debe ingresar un número entero válido para la cantidad.");
+					scanner.nextLine();
+				}
+			}
+			Producto producto = productoDao.obtenerProductoPorId(idProd);
+			if (producto == null || !producto.isEstado()) {
+				System.out.println("Error: El producto con ID proporcionado no existe o está inactivo.");
+				continue;
+			}
+			
+	        double subtotal = cantidad * producto.getPrecioUnitario();
+	        DetalleFactura detalle = new DetalleFactura(producto, cantidad, subtotal, null);
+	        detalles.add(detalle);
+			
+
+	        System.out.print("¿Desea agregar otro producto? (s/n): ");
+	        String respuesta = scanner.nextLine().trim().toLowerCase();
+	        agregarMasProductos = respuesta.equals("s");
+		}
+		
+		double total = 0;
+	    for (DetalleFactura detalle : detalles) {
+	        total += detalle.getSubtotal();
+	    }
+	    Factura factura = new Factura(LocalDate.now(), cliente, cliente.getDomicilio(), total, true);
+	    facturaDao.guardarFactura(factura);
+	    
+	    for (DetalleFactura detalle : detalles) {
+	    	detalle.setFactura(factura);
+	    	detalleFactura.guardarDetalle(detalle);
+	    }
+	    try {
+	        facturaDao.guardarFactura(factura);
+	        System.out.println("Factura creada exitosamente con sus detalles.");
+	    } catch (Exception e) {
+	        System.out.println("Error al registrar la factura. Por favor, inténtelo nuevamente.");
+	        e.printStackTrace();
+	    }
 		System.out.println("Factura creada exitosamente.");
 	}
 
@@ -228,12 +244,15 @@ public class Main {
 			System.out.println("Estado: " + (factura.isEstado() ? "Activa" : "Inactiva"));
 
 			DetalleFactura detalleFac = detalleFactura.obtenerDetallePorId(factura.getId());
+			System.out.println("Detalles de la factura:");
 			if (detalleFac != null) {
+				for(DetalleFactura detalleFactura : factura.getDetalleFacturas()) {
+					System.out.println("");
+					System.out.println("- Producto: " + detalleFactura.getProducto().getDescripcion());
+					System.out.println("  Cantidad: " + detalleFactura.getCantidad());
+					System.out.println("  Subtotal: $" + detalleFactura.getSubtotal());
+				}
 
-				System.out.println("Detalles de la factura:");
-				System.out.println("- Producto: " + detalleFac.getProducto().getDescripcion());
-				System.out.println("  Cantidad: " + detalleFac.getCantidad());
-				System.out.println("  Subtotal: $" + detalleFac.getSubtotal());
 
 			} else {
 				System.out.println("No hay detalles de productos en esta factura.");
